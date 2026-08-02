@@ -216,3 +216,30 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ==========================================================
+# Financial RAG Assistant generated files
+# ==========================================================
+
+# Vector database files (can be regenerated)
+data/embeddings/chroma_db/
+
+# User interaction logs
+monitoring/interactions.csv
+monitoring/interactions_backup.csv
+
+# Hugging Face model/cache files
+.huggingface/
+.cache/
+# ==========================================================
+# Financial RAG generated data
+# ==========================================================
+
+# Source documents
+data/raw/
+
+# Processed ingestion output
+data/processed/
+
+# Vector database
+data/embeddings/

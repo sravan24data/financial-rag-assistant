@@ -1,0 +1,15 @@
+.git
+.gitignore
+
+__pycache__
+*.pyc
+
+monitoring/*.csv
+
+evaluation/__pycache__
+
+.env
+
+*.log
+
+.DS_Store

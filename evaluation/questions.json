@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "question": "What was Apple's total net sales for fiscal year 2024?",
+    "expected_keywords": [
+      "net sales",
+      "revenue",
+      "2024"
+    ]
+  },
+  {
+    "id": 2,
+    "question": "What products does Apple identify as its main product categories?",
+    "expected_keywords": [
+      "iPhone",
+      "Mac",
+      "iPad",
+      "Services"
+    ]
+  },
+  {
+    "id": 3,
+    "question": "What business risks does Apple discuss in its annual report?",
+    "expected_keywords": [
+      "risk",
+      "business",
+      "adversely affected"
+    ]
+  },
+  {
+    "id": 4,
+    "question": "How much did Apple spend on research and development?",
+    "expected_keywords": [
+      "research",
+      "development",
+      "expense"
+    ]
+  },
+  {
+    "id": 5,
+    "question": "Where is Apple's headquarters located?",
+    "expected_keywords": [
+      "Cupertino",
+      "California"
+    ]
+  },
+  {
+    "id": 6,
+    "question": "What cybersecurity risks does Apple disclose?",
+    "expected_keywords": [
+      "cybersecurity",
+      "malicious attacks",
+      "unauthorized access",
+      "confidential information"
+    ]
+  },
+  {
+    "id": 7,
+    "question": "What risks could negatively affect Apple's business operations?",
+    "expected_keywords": [
+      "risks",
+      "operations",
+      "adversely affect"
+    ]
+  }
+]

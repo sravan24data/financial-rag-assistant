@@ -307,6 +307,12 @@ Charts include:
 * Response time distribution
 * Question length distribution
 
+User interactions are stored in:
+
+```
+monitoring/interactions.csv
+```
+
 ---
 
 # Running the Application Locally
@@ -339,19 +345,7 @@ http://localhost:8501
 
 # Running with Docker Compose
 
-The complete application stack runs using Docker Compose.
-
-Services:
-
-```
-financial-rag-assistant
-        |
-        └── Streamlit Application
-
-prefect-server
-        |
-        └── Workflow Dashboard
-```
+The Streamlit application is containerized using Docker Compose.
 
 Build:
 
@@ -369,12 +363,6 @@ Application:
 
 ```
 http://localhost:8501
-```
-
-Prefect dashboard:
-
-```
-http://localhost:4200
 ```
 
 ---
@@ -399,7 +387,7 @@ python evaluation/evaluate_llm.py
 
 The repository contains:
 
-* SEC filing dataset
+* SEC filing dataset location
 * ingestion workflow
 * preprocessing scripts
 * retrieval pipeline

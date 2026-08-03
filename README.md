@@ -1,8 +1,8 @@
 # Financial RAG Assistant
 
-A Retrieval-Augmented Generation (RAG) application for answering questions about SEC financial filings using hybrid retrieval, document reranking, and a local Large Language Model (LLM).
+A Retrieval-Augmented Generation (RAG) application for answering questions about SEC financial filings using hybrid retrieval, document reranking, local LLM generation, and automated ingestion workflows.
 
-The application retrieves relevant sections from company filings and generates grounded answers using only the retrieved documents.
+The application retrieves relevant sections from company filings and generates grounded answers using only retrieved documents.
 
 ---
 
@@ -10,14 +10,14 @@ The application retrieves relevant sections from company filings and generates g
 
 Financial reports are lengthy and difficult to search manually.
 
-This project builds a RAG system that allows users to ask natural language questions about SEC filings while ensuring that responses are grounded in the original filing.
+This project builds a RAG system that allows users to ask natural language questions about SEC filings while ensuring responses are grounded in the original filing.
 
 Example questions:
 
-- What were Apple's total net sales in 2024?
-- What cybersecurity risks does Apple disclose?
-- What are Apple's operating segments?
-- What supply chain risks are discussed?
+* What were Apple's total net sales in 2024?
+* What cybersecurity risks does Apple disclose?
+* What are Apple's operating segments?
+* What supply chain risks are discussed?
 
 ---
 
@@ -57,17 +57,19 @@ Example questions:
 
 # Features
 
-- Hybrid retrieval (BM25 + Vector Search)
-- Query rewriting
-- Cross-Encoder document reranking
-- Local LLM generation using Hugging Face Transformers
-- Streamlit interface
-- Monitoring dashboard
-- User feedback collection
-- Response time tracking
-- Docker support
-- Retrieval evaluation
-- LLM evaluation
+* Hybrid retrieval (BM25 + Vector Search)
+* Query rewriting
+* Cross-Encoder document reranking
+* Local LLM generation using Hugging Face Transformers
+* Streamlit interface
+* Monitoring dashboard
+* User feedback collection
+* Response time tracking
+* Docker support
+* Prefect workflow orchestration
+* Automated ingestion pipeline
+* Retrieval evaluation
+* LLM evaluation
 
 ---
 
@@ -80,6 +82,9 @@ financial-rag-assistant/
 │   ├── main.py
 │   └── pages/
 │       └── 1_Monitoring.py
+│
+├── workflows/
+│   └── ingestion_flow.py
 │
 ├── data/
 │   ├── raw/
@@ -105,12 +110,12 @@ financial-rag-assistant/
 │   └── questions.json
 │
 ├── monitoring/
-│   ├── logger.py
-│   └── interactions.csv
+│   └── logger.py
 │
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
+├── requirements-docker.txt
 └── README.md
 ```
 
@@ -125,6 +130,35 @@ data/raw/10-Q4-2024-As-Filed.pdf
 ```
 
 The PDF is converted into text, chunked, embedded, and indexed in ChromaDB.
+
+---
+
+# Data Ingestion Workflow
+
+The ingestion pipeline is orchestrated using Prefect.
+
+The workflow automates:
+
+1. PDF text extraction
+2. Document chunking
+3. Embedding generation
+4. ChromaDB vector database creation
+
+Run the ingestion workflow:
+
+```bash
+python workflows/ingestion_flow.py
+```
+
+Generated outputs:
+
+```
+data/processed/apple_report.txt
+data/processed/apple_chunks.json
+data/embeddings/chroma_db/
+```
+
+Prefect provides workflow execution tracking, task logging, and pipeline visibility.
 
 ---
 
@@ -160,7 +194,7 @@ What are Apple's risks?
 risk factors business risks threats affecting Apple operations
 ```
 
-This improves recall during retrieval.
+This improves retrieval recall.
 
 ---
 
@@ -168,11 +202,11 @@ This improves recall during retrieval.
 
 The project combines:
 
-- BM25 keyword search
-- SentenceTransformer embeddings
-- ChromaDB vector similarity
+* BM25 keyword search
+* SentenceTransformer embeddings
+* ChromaDB vector similarity
 
-Hybrid retrieval improves both precision and recall compared to either method alone.
+Hybrid retrieval improves both precision and recall compared with individual retrieval methods.
 
 ---
 
@@ -198,10 +232,10 @@ Qwen/Qwen2.5-1.5B-Instruct
 
 Prompt rules ensure:
 
-- only retrieved context is used
-- no hallucinations
-- no external knowledge
-- cybersecurity questions remain domain specific
+* only retrieved context is used
+* no hallucinations
+* no external knowledge
+* financial answers remain grounded in the filing
 
 ---
 
@@ -215,14 +249,12 @@ Implemented in:
 evaluation/evaluate_retrieval.py
 ```
 
-Approaches evaluated:
+Evaluated approaches:
 
-- Vector Search
-- BM25
-- Hybrid Search
-- Hybrid + Reranker
-
-The best-performing retrieval pipeline is used in production.
+* Vector Search
+* BM25
+* Hybrid Search
+* Hybrid + Reranker
 
 ---
 
@@ -234,19 +266,17 @@ Implemented in:
 evaluation/evaluate_llm.py
 ```
 
-Two prompting strategies are compared:
+Compared prompting strategies:
 
-- Baseline Prompt
-- Production Prompt
+* Baseline Prompt
+* Production Prompt
 
 Example results:
 
-| Prompt | Average Score |
-|---------|---------------|
-| Baseline | 0.125 |
-| Production | 1.00 |
-
-The production prompt is selected.
+| Prompt     | Average Score |
+| ---------- | ------------- |
+| Baseline   | 0.125         |
+| Production | 1.00          |
 
 ---
 
@@ -254,26 +284,20 @@ The production prompt is selected.
 
 A Streamlit dashboard tracks system performance.
 
-Collected metrics include:
+Collected metrics:
 
-- Total questions
-- Positive feedback
-- Negative feedback
-- Average response time
+* Total questions
+* Positive feedback
+* Negative feedback
+* Average response time
 
-Charts include:
+Charts:
 
-- Feedback distribution
-- Questions over time
-- Response time trend
-- Response time distribution
-- Question length distribution
-
-User interactions are stored in:
-
-```
-monitoring/interactions.csv
-```
+* Feedback distribution
+* Questions over time
+* Response time trend
+* Response time distribution
+* Question length distribution
 
 ---
 
@@ -285,25 +309,33 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Run the application:
+Run Streamlit:
 
 ```bash
 streamlit run app/main.py
 ```
 
-Monitoring dashboard:
+Open:
 
 ```
 http://localhost:8501
 ```
 
-Select:
+---
 
-```
-Monitoring
+# Running the Ingestion Workflow
+
+Install Prefect:
+
+```bash
+pip install prefect
 ```
 
-from the Streamlit sidebar.
+Run:
+
+```bash
+python workflows/ingestion_flow.py
+```
 
 ---
 
@@ -347,35 +379,35 @@ http://localhost:8501
 
 # Technologies
 
-- Python
-- Streamlit
-- Hugging Face Transformers
-- Sentence Transformers
-- ChromaDB
-- BM25
-- CrossEncoder
-- Pandas
-- Docker
+* Python
+* Streamlit
+* Hugging Face Transformers
+* Sentence Transformers
+* ChromaDB
+* BM25
+* CrossEncoder
+* Prefect
+* Pandas
+* Docker
 
 ---
 
 # Current Limitations
 
-- Uses a single SEC filing.
-- Ingestion is currently script-based rather than orchestrated with a workflow tool.
-- The monitoring dashboard stores interactions locally in CSV format.
+* Supports a single SEC filing.
+* Prefect workflow currently runs locally.
+* Monitoring data is stored locally in CSV format.
 
 ---
 
 # Future Improvements
 
-- Automated ingestion with Prefect or Kestra
-- Multiple SEC filings
-- Cloud deployment
-- Persistent monitoring database
-- Authentication
-- REST API
-- Better query rewriting using an LLM
+* Scheduled Prefect deployments for automatic SEC filing ingestion
+* Multiple SEC filings support
+* Cloud deployment
+* Persistent monitoring database
+* Authentication
+* REST API
+* LLM-based query rewriting
 
 ---
-

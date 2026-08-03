@@ -1,6 +1,6 @@
 # Financial RAG Assistant
 
-A Retrieval-Augmented Generation (RAG) application for answering questions about SEC financial filings using hybrid retrieval, document reranking, local LLM generation, and automated ingestion workflows.
+A Retrieval-Augmented Generation (RAG) application for answering questions about SEC financial filings using hybrid retrieval, document reranking, local Large Language Model (LLM) generation, automated ingestion workflows, and monitoring.
 
 The application retrieves relevant sections from company filings and generates grounded answers using only retrieved documents.
 
@@ -10,7 +10,7 @@ The application retrieves relevant sections from company filings and generates g
 
 Financial reports are lengthy and difficult to search manually.
 
-This project builds a RAG system that allows users to ask natural language questions about SEC filings while ensuring responses are grounded in the original filing.
+This project builds a RAG system that allows users to ask natural language questions about SEC filings while ensuring that responses are grounded in the original filing.
 
 Example questions:
 
@@ -61,7 +61,7 @@ Example questions:
 * Query rewriting
 * Cross-Encoder document reranking
 * Local LLM generation using Hugging Face Transformers
-* Streamlit interface
+* Streamlit user interface
 * Monitoring dashboard
 * User feedback collection
 * Response time tracking
@@ -115,7 +115,7 @@ financial-rag-assistant/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
-├── requirements-docker.txt
+├── requirements-lock.txt
 └── README.md
 ```
 
@@ -135,22 +135,22 @@ The PDF is converted into text, chunked, embedded, and indexed in ChromaDB.
 
 # Data Ingestion Workflow
 
-The ingestion pipeline is orchestrated using Prefect.
+The ingestion pipeline is automated using Prefect.
 
-The workflow automates:
+The workflow performs:
 
 1. PDF text extraction
 2. Document chunking
 3. Embedding generation
 4. ChromaDB vector database creation
 
-Run the ingestion workflow:
+Run ingestion:
 
 ```bash
 python workflows/ingestion_flow.py
 ```
 
-Generated outputs:
+Generated files:
 
 ```
 data/processed/apple_report.txt
@@ -158,13 +158,17 @@ data/processed/apple_chunks.json
 data/embeddings/chroma_db/
 ```
 
-Prefect provides workflow execution tracking, task logging, and pipeline visibility.
+Prefect provides:
+
+* task execution tracking
+* workflow logging
+* pipeline visibility
 
 ---
 
 # Retrieval Pipeline
 
-The retrieval workflow is:
+The retrieval workflow:
 
 1. User enters a question.
 2. Query rewriting expands important financial keywords.
@@ -194,7 +198,7 @@ What are Apple's risks?
 risk factors business risks threats affecting Apple operations
 ```
 
-This improves retrieval recall.
+Query rewriting improves retrieval recall by adding domain-specific terms.
 
 ---
 
@@ -218,7 +222,7 @@ Retrieved chunks are reranked using:
 cross-encoder/ms-marco-MiniLM-L-6-v2
 ```
 
-Only the highest scoring chunks are sent to the LLM.
+Only the highest scoring chunks are passed to the LLM.
 
 ---
 
@@ -256,6 +260,8 @@ Evaluated approaches:
 * Hybrid Search
 * Hybrid + Reranker
 
+The best-performing retrieval pipeline is used in production.
+
 ---
 
 ## LLM Evaluation
@@ -266,7 +272,7 @@ Implemented in:
 evaluation/evaluate_llm.py
 ```
 
-Compared prompting strategies:
+Prompting strategies compared:
 
 * Baseline Prompt
 * Production Prompt
@@ -277,6 +283,8 @@ Example results:
 | ---------- | ------------- |
 | Baseline   | 0.125         |
 | Production | 1.00          |
+
+The production prompt is selected.
 
 ---
 
@@ -291,7 +299,7 @@ Collected metrics:
 * Negative feedback
 * Average response time
 
-Charts:
+Charts include:
 
 * Feedback distribution
 * Questions over time
@@ -301,12 +309,18 @@ Charts:
 
 ---
 
-# Running the Application
+# Running the Application Locally
+
+Python version:
+
+```
+Python 3.12
+```
 
 Install dependencies:
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-lock.txt
 ```
 
 Run Streamlit:
@@ -323,18 +337,44 @@ http://localhost:8501
 
 ---
 
-# Running the Ingestion Workflow
+# Running with Docker Compose
 
-Install Prefect:
+The complete application stack runs using Docker Compose.
+
+Services:
+
+```
+financial-rag-assistant
+        |
+        └── Streamlit Application
+
+prefect-server
+        |
+        └── Workflow Dashboard
+```
+
+Build:
 
 ```bash
-pip install prefect
+docker compose build
 ```
 
 Run:
 
 ```bash
-python workflows/ingestion_flow.py
+docker compose up
+```
+
+Application:
+
+```
+http://localhost:8501
+```
+
+Prefect dashboard:
+
+```
+http://localhost:4200
 ```
 
 ---
@@ -355,24 +395,30 @@ python evaluation/evaluate_llm.py
 
 ---
 
-# Docker
+# Reproducibility
 
-Build:
+The repository contains:
+
+* SEC filing dataset
+* ingestion workflow
+* preprocessing scripts
+* retrieval pipeline
+* evaluation scripts
+* Docker configuration
+* pinned dependencies
+
+To rebuild the knowledge base:
 
 ```bash
-docker compose build
+python workflows/ingestion_flow.py
 ```
 
-Run:
-
-```bash
-docker compose up
-```
-
-Open:
+The workflow recreates:
 
 ```
-http://localhost:8501
+apple_report.txt
+apple_chunks.json
+ChromaDB vector database
 ```
 
 ---
@@ -389,6 +435,7 @@ http://localhost:8501
 * Prefect
 * Pandas
 * Docker
+* Docker Compose
 
 ---
 
@@ -396,7 +443,7 @@ http://localhost:8501
 
 * Supports a single SEC filing.
 * Prefect workflow currently runs locally.
-* Monitoring data is stored locally in CSV format.
+* Monitoring data is stored locally.
 
 ---
 
